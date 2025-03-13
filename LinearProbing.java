@@ -4,7 +4,16 @@ public class LinearProbing extends HashTable {
         super(capacity, loadFactor);
     }
     
+    @Override
     public int h(Object key, int probe) {
-        return 0;
+        int k = key.hashCode();
+        return positiveMod(k % capacity + probe, capacity);
+    }
+
+    protected int positiveMod (int dividend, int divisor) {
+        int quotient = dividend % divisor;
+        if (quotient < 0)
+        quotient += divisor;
+        return quotient;
     }
 }

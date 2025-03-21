@@ -66,5 +66,13 @@ public abstract class HashTable<T> {
         return false;
     }
 
+    protected int positiveMod(int dividend, int divisor) {
+        int quotient = dividend % divisor;
+        if (quotient < 0) {
+            quotient += divisor;
+        }
+        return quotient;
+    }
+
     public abstract int h(T key, int probe);
 }

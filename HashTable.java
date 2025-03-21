@@ -1,8 +1,8 @@
-public abstract class HashTable {
+public abstract class HashTable<T> {
     protected int size;
     protected int capacity;
     protected double loadFactor;
-    protected HashObject[] table;
+    protected HashObject<T>[] table;
 
     public HashTable(int capacity, double loadFactor) {
         this.capacity = capacity;
@@ -11,15 +11,19 @@ public abstract class HashTable {
         this.table = new HashObject[capacity];
     }
 
-    public boolean insert(Object key, Object value) {
+    public boolean insert(T key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
             index = h(key, probe);
             if (table[index] == null) {
-                table[index] = new HashObject(key, value);
+                table[index] = new HashObject<>(key);
                 size++;
                 return true;
+            } else if (table[index].getKey().equals(key)) {
+                // There is a duplicate, increment rather than insert
+                table[index].incrementFrequency();
+                return false;
             }
             probe++;
         }
@@ -28,7 +32,7 @@ public abstract class HashTable {
         return false;
     }
 
-    public Object search(Object key) {
+    public HashObject<T> search(T key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
@@ -37,14 +41,14 @@ public abstract class HashTable {
                 return null;
             }
             if (table[index].getKey().equals(key)) {
-                return table[index].getValue();
+                return table[index];
             }
             probe++;
         }
         return null;
     }
 
-    public boolean delete(Object key) {
+    public boolean delete(T key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
@@ -53,7 +57,7 @@ public abstract class HashTable {
                 return false;
             }
             if (table[index].getKey().equals(key)) {
-                table[index].markDeleted();
+                table[index] = null;
                 size--;
                 return true;
             }
@@ -62,5 +66,5 @@ public abstract class HashTable {
         return false;
     }
 
-    public abstract int h(Object key, int probe);
+    public abstract int h(T key, int probe);
 }

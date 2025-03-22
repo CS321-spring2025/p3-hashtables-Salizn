@@ -1,8 +1,8 @@
-public abstract class HashTable<T> {
+public abstract class HashTable {
     protected int size;
     protected int capacity;
     protected double loadFactor;
-    protected HashObject<T>[] table;
+    protected HashObject[] table;
 
     public HashTable(int capacity, double loadFactor) {
         this.capacity = capacity;
@@ -11,13 +11,13 @@ public abstract class HashTable<T> {
         this.table = new HashObject[capacity];
     }
 
-    public boolean insert(T key) {
+    public boolean insert(Object key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
             index = h(key, probe);
             if (table[index] == null) {
-                table[index] = new HashObject<>(key);
+                table[index] = new HashObject(key);
                 size++;
                 return true;
             } else if (table[index].getKey().equals(key)) {
@@ -32,7 +32,7 @@ public abstract class HashTable<T> {
         return false;
     }
 
-    public HashObject<T> search(T key) {
+    public HashObject search(Object key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
@@ -48,7 +48,7 @@ public abstract class HashTable<T> {
         return null;
     }
 
-    public boolean delete(T key) {
+    public boolean delete(Object key) {
         int probe = 0;
         int index;
         while (probe < capacity) {
@@ -74,5 +74,5 @@ public abstract class HashTable<T> {
         return quotient;
     }
 
-    public abstract int h(T key, int probe);
+    public abstract int h(Object key, int probe);
 }

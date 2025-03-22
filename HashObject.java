@@ -1,15 +1,15 @@
-public class HashObject<T> {
-    private final T key;
+public class HashObject {
+    private final Object key;
     private int frequency;
     private int probeCount;
 
-    public HashObject(T key) {
+    public HashObject(Object key) {
         this.key = key;
         this.frequency = 1;
         this.probeCount = 0;
     }
 
-    public T getKey() {
+    public Object getKey() {
         return key;
     }
 
@@ -33,7 +33,7 @@ public class HashObject<T> {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        HashObject<?> other = (HashObject<?>) object;
+        HashObject other = (HashObject) object;
         return key.equals(other.key);
     }
 

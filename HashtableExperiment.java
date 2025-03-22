@@ -24,7 +24,9 @@ public class HashtableExperiment {
 
         loadData(dataSource, linearTable, doubleTable, maxSize);
         
-        //Debugs
+        if (debugLevel == 0) {
+            debugSummary(linearTable, doubleTable, dataSource, loadFactor);
+        }
     }
 
     private static void loadData(int dataSource, HashTable linearTable, HashTable doubleTable, int maxSize) {
@@ -36,7 +38,9 @@ public class HashtableExperiment {
             words = loadWords("word-list.txt");
         }
 
-        while (linearTable.size < maxSize && doubleTable.size < maxSize) {
+        int wordIndex = 0;
+
+        while (linearTable.size <= maxSize && doubleTable.size <= maxSize) {
             Object key;
             if (dataSource == 1) {
                 key = random.nextInt();
@@ -45,7 +49,8 @@ public class HashtableExperiment {
                 Date date = new Date(current);
                 key = new HashObject(date);
             } else {
-                key = words.get(random.nextInt(words.size()));
+                key = words.get(wordIndex % words.size());
+                wordIndex++;
             }
 
             linearTable.insert(key);
@@ -63,6 +68,23 @@ public class HashtableExperiment {
             System.err.println("Error reading the file: " + fileName);
         }
         return words;
+    }
+
+    private static void debugSummary(HashTable linearTable, HashTable doubleTable, int dataSource, double loadFactor) {
+        String dataSouceName = (dataSource == 1) ? "Random-Numbers" : (dataSource == 2) ? "Date-Values" : "Word-List";
+        int linearAttempts = linearTable.getInsertions() + linearTable.getDuplicates();
+        int doubleAttempts = doubleTable.getInsertions() + doubleTable.getDuplicates();
+
+        System.out.println("HashtableExperiment: Found a twin prime table capacity: " + linearTable.capacity);
+        System.out.println("HashtableExperiment: Input: " + dataSouceName + "   Loadfactor: " + String.format("%.2f", loadFactor));
+        System.out.println("\n        Using Linear Probing");
+        System.out.println("HashtableExperiment: size of hash table is " + linearTable.size);
+        System.out.println("        Inserted " + linearAttempts + " elements, of which " + linearTable.getDuplicates() + " were duplicates");
+        System.out.println("        Avg. no. of probes = " + String.format("%.2f", linearTable.getProbeAverage()));
+        System.out.println("\n        Using Double Hashing");
+        System.out.println("HashtableExperiment: size of hash table is " + doubleTable.size);
+        System.out.println("        Inserted " + doubleAttempts + " elements, of which " + doubleTable.getDuplicates() + " were duplicates");
+        System.out.println("        Avg. no. of probes = " + String.format("%.2f", doubleTable.getProbeAverage()));
     }
 
     private static void printUsage() {

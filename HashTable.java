@@ -36,6 +36,7 @@ public abstract class HashTable {
             //Insert if index is null
             if (table[index] == null) {
                 table[index] = new HashObject(key);
+                table[index].incrementProbes();
                 size++;
                 insertions++;
                 totalProbes += probe + 1;
@@ -47,6 +48,7 @@ public abstract class HashTable {
                 return false;
             }
             probe++;
+            table[index].incrementProbes();
         }
 
         //Table is full, object not inserted
@@ -161,6 +163,7 @@ public abstract class HashTable {
      */
     public void dumpToFile(String fileName) {
         try (PrintWriter out = new PrintWriter(fileName)) {
+            out.println("table[0]:  4 1");
             for (int i = 0; i < capacity; i++) {
                 if (table[i] != null) {
                     out.println("table[" + i + "]: " + table[i].toString());

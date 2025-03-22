@@ -9,14 +9,29 @@ public class HashObject {
         this.probeCount = 0;
     }
 
+    /**
+     * Returns the key of the HashObject.
+     *
+     * @returns key of the HashObject
+     */
     public Object getKey() {
         return key;
     }
 
+    /**
+     * Returns the frequency of the HashObject.
+     *
+     * @returns frequency of the HashObject
+     */
     public int getFrequency() {
         return frequency;
     }
 
+    /**
+     * Returns the probe count of the HashObject.
+     *
+     * @returns probe count of the HashObject
+     */
     public int getProbeCount() {
         return probeCount;
     }
@@ -42,6 +57,7 @@ public class HashObject {
         return key.hashCode();
     }
 
+    // String method for Debug 1
     @Override
     public String toString() {
         return key + " " + frequency + " " + probeCount;

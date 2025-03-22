@@ -1,7 +1,15 @@
 public class TwinPrimeGenerator {
 
+    /**
+     * Finds the first and lowest twin prime in a range
+     *
+     * @param min
+     * @param max
+     * @returns lowest twin prime in a range
+     */
     public static int generateTwinPrime(int min, int max) {
         for (int i = min; i <= max; i++) {
+            // Check if i and its twin are primes
             if (checkPrime(i) && checkPrime(i-2)) {
                 return i;
             }
@@ -9,6 +17,12 @@ public class TwinPrimeGenerator {
         throw new IllegalArgumentException("Did not find twin primes the range.");
     }
 
+    /**
+     * Checks if a number is prime
+     *
+     * @param number
+     * @returns true if number is prime, false if not
+     */
     private static boolean checkPrime(int number) {
         //1 is not prime
         if (number < 2) {

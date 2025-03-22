@@ -4,6 +4,13 @@ public class DoubleHashing extends HashTable {
         super(capacity, loadFactor);
     }
     
+    /**
+     * Overrides the abstract method for the HashTable class using double hashing
+     *
+     * @param key (key of the object)
+     * @param probe (number of probes)
+     * @returns index of the HashTable where the item should be stored
+     */
     @Override
     public int h(Object key, int probe) {
         int k = key.hashCode();

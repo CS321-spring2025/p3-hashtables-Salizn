@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public abstract class HashTable {
     protected int size;
     protected int capacity;
@@ -149,6 +152,24 @@ public abstract class HashTable {
      */
     public double getProbeAverage() {
         return insertions == 0 ? 0 : (double) totalProbes / insertions;
+    }
+
+    /**
+     * Dumps contents of HashTable to a file
+     *
+     * @param fileName
+     */
+    public void dumpToFile(String fileName) {
+        try (PrintWriter out = new PrintWriter(fileName)) {
+            for (int i = 0; i < capacity; i++) {
+                if (table[i] != null) {
+                    out.println("table[" + i + "]: " + table[i].toString());
+                }
+            }
+            out.close();
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + fileName);
+        }
     }
 
     public abstract int h(Object key, int probe);

@@ -28,6 +28,7 @@ public abstract class HashTable {
     public boolean insert(Object key) {
         int probe = 0;
         int index;
+        HashObject item = new HashObject(key);
 
         while (probe < capacity) {
             // Chose Linear or Double
@@ -35,8 +36,8 @@ public abstract class HashTable {
 
             //Insert if index is null
             if (table[index] == null) {
-                table[index] = new HashObject(key);
-                table[index].incrementProbes();
+                table[index] = item;
+                item.incrementProbes();
                 size++;
                 insertions++;
                 totalProbes += probe + 1;
@@ -48,7 +49,7 @@ public abstract class HashTable {
                 return false;
             }
             probe++;
-            table[index].incrementProbes();
+            item.incrementProbes();
         }
 
         //Table is full, object not inserted
@@ -163,7 +164,6 @@ public abstract class HashTable {
      */
     public void dumpToFile(String fileName) {
         try (PrintWriter out = new PrintWriter(fileName)) {
-            out.println("table[0]:  4 1");
             for (int i = 0; i < capacity; i++) {
                 if (table[i] != null) {
                     out.println("table[" + i + "]: " + table[i].toString());

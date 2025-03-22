@@ -1,8 +1,9 @@
 import java.util.Date;
-import java.util.Scanner;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class HashtableExperiment {
 
@@ -18,7 +19,7 @@ public class HashtableExperiment {
         int debugLevel = (args.length == 3) ? Integer.parseInt(args[2]) : 0;
 
         int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
-        int maxSize = (int) (tableSize * loadFactor);
+        int maxSize = (int) Math.ceil(tableSize * loadFactor);
 
         // Tables
         LinearProbing linearTable = new LinearProbing(tableSize, loadFactor);
@@ -27,15 +28,15 @@ public class HashtableExperiment {
         loadData(dataSource, linearTable, doubleTable, maxSize);
         
         if (debugLevel == 0) {
-            debugSummary(linearTable, dataSource, loadFactor, 1);
-            debugSummary(doubleTable, dataSource, loadFactor, 2);
+            debugSummary(linearTable, dataSource, loadFactor, 1, maxSize);
+            debugSummary(doubleTable, dataSource, loadFactor, 2, maxSize);
         } else if (debugLevel == 1) {
             linearTable.dumpToFile("linear-dump.txt");
             doubleTable.dumpToFile("double-dump.txt");
-            debugSummary(linearTable, dataSource, loadFactor, 1);
+            debugSummary(linearTable, dataSource, loadFactor, 1, maxSize);
             System.out.println("HashtableExperiment: Saved dump of hash table\n");
 
-            debugSummary(doubleTable, dataSource, loadFactor, 2);
+            debugSummary(doubleTable, dataSource, loadFactor, 2, maxSize);
             System.out.println("HashtableExperiment: Saved dump of hash table\n");
         }
     }
@@ -59,7 +60,7 @@ public class HashtableExperiment {
         }
         int wordIndex = 0;
 
-        while (linearTable.size <= maxSize && doubleTable.size <= maxSize) {
+        while (linearTable.size < maxSize && doubleTable.size < maxSize) {
             Object key;
 
             // Data source is random integers
@@ -72,7 +73,7 @@ public class HashtableExperiment {
                 key = new HashObject(date);
             } else {
                 // Words
-                key = words.get(wordIndex % words.size());
+                key = words.get(wordIndex);
                 wordIndex++;
             }
 
@@ -89,12 +90,15 @@ public class HashtableExperiment {
      */
     private static List<String> loadWords(String fileName) {
         List<String> words = new ArrayList<>();
-
+        
         // Scan the text file
-        try (Scanner scanner = new Scanner(new java.io.File(fileName))) {
-            while (scanner.hasNext()) {
-                words.add(scanner.next());
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line = reader.readLine();
+            while (line != null) {
+                words.add(line);
+                line = reader.readLine();
             }
+            reader.close();
         } catch (Exception e) {
             System.err.println("Error reading the file: " + fileName);
         }
@@ -109,7 +113,7 @@ public class HashtableExperiment {
      * @param dataSource (type of data used)
      * @param loadFactor
      */
-    private static void debugSummary(HashTable table, int dataSource, double loadFactor, int iteration) {
+    private static void debugSummary(HashTable table, int dataSource, double loadFactor, int iteration, int maxSize) {
         String dataSouceName = (dataSource == 1) ? "Random-Numbers" : (dataSource == 2) ? "Date-Values" : "Word-List";
         int attempts = table.getInsertions() + table.getDuplicates();
 
@@ -121,7 +125,7 @@ public class HashtableExperiment {
             System.out.println("\n        Using Double Hashing");
         }
         
-        System.out.println("HashtableExperiment: size of hash table is " + table.size);
+        System.out.println("HashtableExperiment: size of hash table is " + maxSize);
         System.out.println("        Inserted " + attempts + " elements, of which " + table.getDuplicates() + " were duplicates");
         System.out.println("        Avg. no. of probes = " + String.format("%.2f", table.getProbeAverage()));
     }

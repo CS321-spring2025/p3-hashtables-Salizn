@@ -25,7 +25,7 @@ public class HashtableExperiment {
         LinearProbing linearTable = new LinearProbing(tableSize, loadFactor);
         DoubleHashing doubleTable = new DoubleHashing(tableSize, loadFactor);
 
-        loadData(dataSource, linearTable, doubleTable, maxSize);
+        loadData(dataSource, linearTable, doubleTable, maxSize, debugLevel);
         
         if (debugLevel == 0) {
             debugSummary(linearTable, dataSource, loadFactor, 1, maxSize);
@@ -49,7 +49,7 @@ public class HashtableExperiment {
      * @param doubleTable (double hashing table)
      * @param maxSize (maximum size of the table)
      */
-    private static void loadData(int dataSource, HashTable linearTable, HashTable doubleTable, int maxSize) {
+    private static void loadData(int dataSource, HashTable linearTable, HashTable doubleTable, int maxSize, int debugLevel) {
         Random random = new Random();
         long current = new Date().getTime();
         List<String> words = new ArrayList<>();
@@ -77,8 +77,16 @@ public class HashtableExperiment {
                 wordIndex++;
             }
 
-            linearTable.insert(key);
-            doubleTable.insert(key);
+            boolean linearInserted = linearTable.insert(key);
+            boolean doubleInserted = doubleTable.insert(key);
+
+            if (debugLevel == 2) {
+                String statusLinear = linearInserted ? "Inserted" : "Duplicate";
+                String statusDouble = doubleInserted ? "Inserted" : "Duplicate";
+
+                System.out.println("[Linear Probing] Key: " + key + "  " + statusLinear);
+                System.out.println("[Double Hashing] Key: " + key + "  " + statusDouble);
+            }
         }
     }
 
